@@ -81,20 +81,6 @@ async function getGitHubStats(username: string) {
   ];
   const mostActiveDay = days[dayCount.indexOf(Math.max(...dayCount))];
 
-  // Add served by name
-  const FAMOUS_DEVS = [
-    "Linus Torvalds",
-    "Ada Lovelace",
-    "Grace Hopper",
-    "Alan Turing",
-    "Margaret Hamilton",
-    "Dennis Ritchie",
-    "Ken Thompson",
-  ];
-
-  const serverName =
-    FAMOUS_DEVS[Math.floor(Math.random() * FAMOUS_DEVS.length)];
-
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
   const dateFilter = thirtyDaysAgo.toISOString().split("T")[0];
@@ -135,7 +121,6 @@ async function getGitHubStats(username: string) {
       totalForks,
       mostActiveDay,
       totalCommits,
-      serverName,
       topLanguages: topLanguages || "NONE",
     },
   };
@@ -146,31 +131,31 @@ export default function Home() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const receiptRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
   const handleDownload = async () => {
-    if (receiptRef.current) {
-      const dataUrl = await toPng(receiptRef.current, { quality: 0.95 });
+    if (cardRef.current) {
+      const dataUrl = await toPng(cardRef.current, { quality: 0.95 });
       const link = document.createElement("a");
-      link.download = `github-receipt-${data?.userData?.login || "user"}.png`;
+      link.download = `github-card-${data?.userData?.login || "user"}.png`;
       link.href = dataUrl;
       link.click();
     }
   };
 
   const handleShare = async () => {
-    if (!receiptRef.current) return;
+    if (!cardRef.current) return;
 
     try {
-      const dataUrl = await toPng(receiptRef.current);
+      const dataUrl = await toPng(cardRef.current);
       const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], "github-receipt.png", {
+      const file = new File([blob], "github-card.png", {
         type: "image/png",
       });
 
       if (navigator.share) {
         await navigator.share({
-          title: "My GitHub Receipt",
+          title: "My GitHub Card",
           text: `Check out my GitHub stats for ${data?.userData?.login}!`,
           files: [file],
         });
@@ -256,51 +241,6 @@ export default function Home() {
         </div>
       </form>
 
-      <div className=" aspect-video w-full bg-black flex">
-        <div className="w-[47.5%] h-full bg-[#2A2A2A] flex flex-col justify-center items-center">
-          <Image
-            // src={data.userData.avatar_url}
-            src="/accodes21.png"
-            alt="user-avatar"
-            width={120}
-            height={120}
-          />
-          <h3>Aarya Chopkar</h3>
-          <h3>Frontend Developer | NextJS</h3>
-        </div>
-        <div className="w-[5%] h-full bg-[#F7EA35]"></div>
-        <div className="w-[47.5%] h-full">
-          <table className="flex justify-center items-center">
-            <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
-              <tr>
-                <td>Username</td>
-              </tr>
-              <tr>
-                <td>accodes21</td>
-              </tr>
-              <tr>
-                <td>REPOS</td>
-              </tr>
-              <tr>
-                <td>63</td>
-              </tr>
-              <tr>
-                <td>FOLLOWERS</td>
-              </tr>
-              <tr>
-                <td>163</td>
-              </tr>
-              <tr>
-                <td>CREATED-AT</td>
-              </tr>
-              <tr>
-                <td>2022-03-18</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
       {loading && (
         <div className="flex justify-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
@@ -309,120 +249,56 @@ export default function Home() {
 
       {data && (
         <div className="flex flex-col items-center">
-          <div className="receipt-container">
-            <div className="coffee-stain" />
-            <div
-              ref={receiptRef}
-              className="receipt-content w-full max-w-[88mm] bg-white text-black"
-            >
-              <div className="p-4 sm:p-6 font-mono text-[11px] sm:text-xs leading-relaxed">
-                <div className="text-center mb-6">
-                  <h2 className="text-base sm:text-lg font-bold">
-                    GITHUB RECEIPT
-                  </h2>
-                  <p>
-                    {new Date()
-                      .toLocaleDateString("en-US", {
-                        weekday: "long",
-                        month: "long",
-                        day: "numeric",
-                        year: "numeric",
-                      })
-                      .toUpperCase()}
-                  </p>
-                  <p className="mt-1 opacity-75">
-                    ORDER #
-                    {String(Math.floor(Math.random() * 9999)).padStart(4, "0")}
-                  </p>
-                </div>
-
-                <div className="mb-4">
-                  <p>CUSTOMER: {data.userData.name || data.userData.login}</p>
-                  <p className="opacity-75">@{data.userData.login}</p>
-                </div>
-
-                <div className="border-t border-b border-dashed py-3 mb-4">
-                  <table className="w-full">
-                    <tbody>
-                      <tr>
-                        <td>REPOSITORIES</td>
-                        <td className="text-right">{data.stats.totalRepos}</td>
-                      </tr>
-                      <tr>
-                        <td>STARS EARNED</td>
-                        <td className="text-right">{data.stats.totalStars}</td>
-                      </tr>
-                      <tr>
-                        <td>REPO FORKS</td>
-                        <td className="text-right">{data.stats.totalForks}</td>
-                      </tr>
-                      <tr>
-                        <td>FOLLOWERS</td>
-                        <td className="text-right">
-                          {data.userData.followers}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>FOLLOWING</td>
-                        <td className="text-right">
-                          {data.userData.following}
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-
-                <div className="mb-4">
-                  <p>TOP LANGUAGES:</p>
-                  <p>{data.stats.topLanguages || "NONE"}</p>
-                </div>
-
-                <div className="border-t border-dashed pt-3 mb-4">
-                  <div className="flex justify-between">
-                    <span>MOST ACTIVE DAY:</span>
-                    <span>{data.stats.mostActiveDay}</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span>COMMITS (30d):</span>
-                    <span>{data.stats.totalCommits}</span>
-                  </div>
-                  <div className="flex justify-between font-bold mt-2">
-                    <span>CONTRIBUTION SCORE:</span>
-                    <span>
-                      {data.stats.totalStars * 2 + data.userData.followers * 3}
-                    </span>
-                  </div>
-                </div>
-
-                <div className="text-center opacity-75 mb-4">
-                  <p>Served by: {data.stats.serverName}</p>
-                  <p>{new Date().toLocaleTimeString()}</p>
-                </div>
-
-                <div className="border-t border-dashed pt-4 mb-4 text-center">
-                  <p>
-                    COUPON CODE:{" "}
-                    {Math.random().toString(36).substring(2, 8).toUpperCase()}
-                  </p>
-                  <p className="text-xs opacity-75">
-                    Save for your next commit!
-                  </p>
-                </div>
-
-                <div className="mb-6 opacity-75">
-                  <p>CARD #: **** **** **** {new Date().getFullYear()}</p>
-                  <p>AUTH CODE: {Math.floor(Math.random() * 1000000)}</p>
-                  <p>CARDHOLDER: {data.userData.login.toUpperCase()}</p>
-                </div>
-
-                <div className="text-center">
-                  <p className="mb-4">THANK YOU FOR CODING!</p>
-                  <p className="mt-2 opacity-75">
-                    github.com/{data.userData.login}
-                  </p>
-                </div>
-              </div>
-              <div className="receipt-fade" />
+          <div ref={cardRef} className=" aspect-video w-full bg-black flex">
+            <div className="w-[47.5%] h-full bg-[#2A2A2A] flex flex-col justify-center items-center">
+              <Image
+                src={data.userData.avatar_url}
+                // src="/accodes21.png"
+                alt="user-avatar"
+                width={120}
+                height={120}
+              />
+              <h3>{data.userData.name}</h3>
+              <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
+                {data.userData.bio}
+              </h3>
+            </div>
+            <div className="w-[5%] h-full bg-[#F7EA35]"></div>
+            <div className="w-[47.5%] h-full">
+              <table className="flex justify-center items-center">
+                <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
+                  <tr>
+                    <td>Username</td>
+                  </tr>
+                  <tr>
+                    <td>{data.userData.login}</td>
+                  </tr>
+                  <tr>
+                    <td>REPOS</td>
+                  </tr>
+                  <tr>
+                    <td>{data.userData.public_repos}</td>
+                  </tr>
+                  <tr>
+                    <td>FOLLOWERS</td>
+                  </tr>
+                  <tr>
+                    <td>{data.userData.followers}</td>
+                  </tr>
+                  <tr>
+                    <td>CREATED-AT</td>
+                  </tr>
+                  <tr>
+                    <td>
+                      {
+                        new Date(data.userData.created_at)
+                          .toISOString()
+                          .split("T")[0]
+                      }
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
           </div>
 
