@@ -35,14 +35,12 @@ export default function RootLayout({
         />
       </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased
-                       bg-white dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100
-                       min-h-screen flex flex-col`}
+        className={`${geistSans.variable} ${geistMono.variable} h-full w-full bg-[length:35px_35px] bg-transparent bg-light-radial dark:bg-dark-radial animate-blur text-zinc-900 dark:text-zinc-100 min-h-screen flex flex-col`}
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="light"
-          enableSystem={false}
+          defaultTheme="dark"
+          enableSystem={true}
         >
           <ThemeToggle />
           <main className="flex-1">{children}</main>
