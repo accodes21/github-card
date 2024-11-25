@@ -13,7 +13,7 @@ export default {
         "light-radial":
           "radial-gradient(circle at 50% 50%, #f0f0f0 20%, transparent 21%, transparent 49%, #f0f0f0 50%)",
         "dark-radial":
-          "radial-gradient(circle at 50% 50%, #222 20%, transparent 21%, transparent 49%, #222 50%)",
+          "radial-gradient(circle at 50% 50%, #333 20%, transparent 21%, transparent 49%, #333 50%)",
       },
       animation: {
         blur: "blurAnimate 5s ease-in-out infinite alternate",
