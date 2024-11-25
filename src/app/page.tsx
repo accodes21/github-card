@@ -2,6 +2,7 @@
 import { useState, useRef } from "react";
 import { toPng } from "html-to-image";
 import Image from "next/image";
+import Tilt from "react-parallax-tilt";
 
 interface GitHubRepo {
   name: string;
@@ -249,62 +250,75 @@ export default function Home() {
 
       {data && (
         <div className="flex flex-col items-center">
-          <div
-            ref={cardRef}
-            className=" aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#282828]"
+          <Tilt
+            glareEnable={true}
+            glareMaxOpacity={0.25}
+            tiltMaxAngleX={10}
+            tiltMaxAngleY={10}
+            perspective={1000}
+            transitionSpeed={1000}
+            scale={1.05}
+            transitionEasing="cubic-bezier(0.19, 1.0, 0.22, 1.0)"
+            glareBorderRadius="0rem"
+            className="rounded-[-15px]"
           >
-            <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
-              <Image
-                src={data.userData.avatar_url}
-                // src="/accodes21.png"
-                alt="user-avatar"
-                width={120}
-                height={120}
-              />
-              <h3>{data.userData.name}</h3>
-              <h3>{data.userData.login}</h3>
-              <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
-                {data.userData.bio}
-              </h3>
+            <div
+              ref={cardRef}
+              className=" aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]"
+            >
+              <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
+                <Image
+                  src={data.userData.avatar_url}
+                  // src="/accodes21.png"
+                  alt="user-avatar"
+                  width={120}
+                  height={120}
+                />
+                <h3>{data.userData.name}</h3>
+                <h3>{data.userData.login}</h3>
+                <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
+                  {data.userData.bio}
+                </h3>
+              </div>
+              <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
+              <div className="w-[47.5%] h-full">
+                <table className="flex justify-center items-center">
+                  <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
+                    <tr>
+                      <td>Username</td>
+                    </tr>
+                    <tr>
+                      <td>{data.userData.login}</td>
+                    </tr>
+                    <tr>
+                      <td>REPOS</td>
+                    </tr>
+                    <tr>
+                      <td>{data.userData.public_repos}</td>
+                    </tr>
+                    <tr>
+                      <td>FOLLOWERS</td>
+                    </tr>
+                    <tr>
+                      <td>{data.userData.followers}</td>
+                    </tr>
+                    <tr>
+                      <td>CREATED-AT</td>
+                    </tr>
+                    <tr>
+                      <td>
+                        {
+                          new Date(data.userData.created_at)
+                            .toISOString()
+                            .split("T")[0]
+                        }
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
-            <div className="w-[47.5%] h-full">
-              <table className="flex justify-center items-center">
-                <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
-                  <tr>
-                    <td>Username</td>
-                  </tr>
-                  <tr>
-                    <td>{data.userData.login}</td>
-                  </tr>
-                  <tr>
-                    <td>REPOS</td>
-                  </tr>
-                  <tr>
-                    <td>{data.userData.public_repos}</td>
-                  </tr>
-                  <tr>
-                    <td>FOLLOWERS</td>
-                  </tr>
-                  <tr>
-                    <td>{data.userData.followers}</td>
-                  </tr>
-                  <tr>
-                    <td>CREATED-AT</td>
-                  </tr>
-                  <tr>
-                    <td>
-                      {
-                        new Date(data.userData.created_at)
-                          .toISOString()
-                          .split("T")[0]
-                      }
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          </Tilt>
 
           <div className="mt-6 flex gap-4">
             <button
