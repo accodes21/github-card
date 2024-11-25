@@ -249,8 +249,11 @@ export default function Home() {
 
       {data && (
         <div className="flex flex-col items-center">
-          <div ref={cardRef} className=" aspect-video w-full bg-black flex">
-            <div className="w-[47.5%] h-full bg-[#2A2A2A] flex flex-col justify-center items-center">
+          <div
+            ref={cardRef}
+            className=" aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#282828]"
+          >
+            <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
               <Image
                 src={data.userData.avatar_url}
                 // src="/accodes21.png"
@@ -259,11 +262,12 @@ export default function Home() {
                 height={120}
               />
               <h3>{data.userData.name}</h3>
+              <h3>{data.userData.login}</h3>
               <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
                 {data.userData.bio}
               </h3>
             </div>
-            <div className="w-[5%] h-full bg-[#F7EA35]"></div>
+            <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
             <div className="w-[47.5%] h-full">
               <table className="flex justify-center items-center">
                 <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">

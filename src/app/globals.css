@@ -2,4 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-
+.fold{
+    background: linear-gradient(
+  to right, 
+  #F7D635 0%, 
+  #DDD017 25%, 
+  #c9b00b 50%, 
+  #DDD017 75%, 
+  #F7D635 100%
+);
+}
