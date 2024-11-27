@@ -3,6 +3,7 @@ import { useState, useRef } from "react";
 import { toPng } from "html-to-image";
 import Image from "next/image";
 import Tilt from "react-parallax-tilt";
+import QRCodeDiv from "./components/QRCode";
 
 interface GitHubRepo {
   name: string;
@@ -134,6 +135,13 @@ export default function Home() {
   const [error, setError] = useState("");
   const cardRef = useRef<HTMLDivElement>(null);
 
+  const [isFlipped, setIsFlipped] = useState(false);
+
+  const handleFlip = () => {
+    setIsFlipped((prev) => !prev);
+    console.log("clicked", isFlipped);
+  };
+
   const handleDownload = async () => {
     if (cardRef.current) {
       const dataUrl = await toPng(cardRef.current, { quality: 0.95 });
@@ -260,62 +268,89 @@ export default function Home() {
             scale={1.05}
             transitionEasing="cubic-bezier(0.19, 1.0, 0.22, 1.0)"
             glareBorderRadius="0rem"
-            className="rounded-[-15px]"
+            className="relative aspect-video w-full rounded-[15px]"
           >
             <div
-              ref={cardRef}
-              className=" aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]"
+              className={`relative w-full h-full transition-transform duration-700 ${
+                isFlipped ? "rotate-y-180" : ""
+              }`}
+              style={{
+                transformStyle: "preserve-3d",
+              }}
+              // onClick={handleFlip}
             >
-              <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
-                <Image
-                  src={data.userData.avatar_url}
-                  // src="/accodes21.png"
-                  alt="user-avatar"
-                  width={120}
-                  height={120}
-                />
-                <h3>{data.userData.name}</h3>
-                <h3>{data.userData.login}</h3>
-                <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
-                  {data.userData.bio}
-                </h3>
+              {/* Front Side */}
+              <div
+                className="absolute w-full h-full backface-hidden rounded-[15px]"
+                style={{
+                  backfaceVisibility: "hidden",
+                }}
+              >
+                <div className="front aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]">
+                  <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
+                    <Image
+                      src={data.userData.avatar_url}
+                      alt="user-avatar"
+                      width={120}
+                      height={120}
+                    />
+                    <h3>{data.userData.name}</h3>
+                    <h3>{data.userData.login}</h3>
+                    <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
+                      {data.userData.bio}
+                    </h3>
+                  </div>
+                  <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
+                  <div className="w-[47.5%] h-full">
+                    <table className="flex justify-center items-center">
+                      <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
+                        <tr>
+                          <td>Username</td>
+                        </tr>
+                        <tr>
+                          <td>{data.userData.login}</td>
+                        </tr>
+                        <tr>
+                          <td>REPOS</td>
+                        </tr>
+                        <tr>
+                          <td>{data.userData.public_repos}</td>
+                        </tr>
+                        <tr>
+                          <td>FOLLOWERS</td>
+                        </tr>
+                        <tr>
+                          <td>{data.userData.followers}</td>
+                        </tr>
+                        <tr>
+                          <td>CREATED-AT</td>
+                        </tr>
+                        <tr>
+                          <td>
+                            {
+                              new Date(data.userData.created_at)
+                                .toISOString()
+                                .split("T")[0]
+                            }
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
               </div>
-              <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
-              <div className="w-[47.5%] h-full">
-                <table className="flex justify-center items-center">
-                  <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
-                    <tr>
-                      <td>Username</td>
-                    </tr>
-                    <tr>
-                      <td>{data.userData.login}</td>
-                    </tr>
-                    <tr>
-                      <td>REPOS</td>
-                    </tr>
-                    <tr>
-                      <td>{data.userData.public_repos}</td>
-                    </tr>
-                    <tr>
-                      <td>FOLLOWERS</td>
-                    </tr>
-                    <tr>
-                      <td>{data.userData.followers}</td>
-                    </tr>
-                    <tr>
-                      <td>CREATED-AT</td>
-                    </tr>
-                    <tr>
-                      <td>
-                        {
-                          new Date(data.userData.created_at)
-                            .toISOString()
-                            .split("T")[0]
-                        }
-                      </td>
-                    </tr>
-                  </tbody>
-                </table>
+
+              {/* Back Side */}
+              <div
+                className="absolute w-full h-full bg-[#111] text-white flex flex-col justify-center items-center shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e] rotate-y-180 backface-hidden"
+                style={{
+                  backfaceVisibility: "hidden",
+                }}
+              >
+                <QRCodeDiv
+                  value={`https://github.com/${data.userData.login}`}
+                />
+                <h3 className="mt-2 text-xl">{data.userData.login}</h3>
               </div>
             </div>
           </Tilt>
@@ -364,6 +399,27 @@ export default function Home() {
                 />
               </svg>
               Share
+            </button>
+            <button
+              onClick={handleFlip}
+              className="px-4 py-2 bg-white dark:bg-zinc-800 rounded-lg
+                       text-zinc-900 dark:text-white
+                       hover:bg-zinc-100 dark:hover:bg-zinc-700 
+                       transition-colors flex items-center gap-2 text-sm"
+            >
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M13.4325 20.115L13.695 21.615C14.8146 21.4198 15.8911 21.0288 16.875 20.46L16.125 19.1625C15.2903 19.6355 14.3789 19.958 13.4325 20.115ZM18.315 17.3025L19.5 18.2625C20.2264 17.3903 20.795 16.3978 21.18 15.33L19.7775 14.82C19.4394 15.7269 18.9443 16.5672 18.315 17.3025ZM7.125 20.4375C8.10893 21.0063 9.18539 21.3973 10.305 21.5925L10.5675 20.0925C9.61962 19.9284 8.70814 19.5984 7.875 19.1175L7.125 20.4375ZM4.2525 14.82L2.85 15.33C3.22589 16.3957 3.78421 17.388 4.5 18.2625L4.74 18.0675L5.655 17.3175C5.03631 16.5799 4.5515 15.7397 4.2225 14.835L4.2525 14.82ZM21.75 12C21.7472 10.8634 21.5441 9.73614 21.15 8.67L19.7475 9.18C20.0752 10.0843 20.2452 11.0382 20.25 12H21.75ZM19.5 5.7375C18.5851 4.63603 17.4387 3.74961 16.1425 3.14124C14.8462 2.53286 13.4319 2.21747 12 2.21747C10.5681 2.21747 9.15376 2.53286 7.85752 3.14124C6.56128 3.74961 5.41495 4.63603 4.5 5.7375V3H3V9H9V7.5H5.1075C5.81141 6.42463 6.75685 5.52861 7.86841 4.88336C8.97997 4.23812 10.2269 3.8615 11.5098 3.78355C12.7927 3.7056 14.0761 3.92847 15.2576 4.43439C16.4391 4.9403 17.4861 5.71527 18.315 6.6975L19.5 5.7375Z"
+                  fill="#1A1A1A"
+                />
+              </svg>
+              Flip
             </button>
           </div>
         </div>
