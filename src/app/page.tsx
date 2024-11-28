@@ -1,5 +1,5 @@
 "use client";
-import { useState, useRef } from "react";
+import { useState, useRef, RefObject } from "react";
 import { toPng } from "html-to-image";
 import Image from "next/image";
 import Tilt from "react-parallax-tilt";
@@ -144,11 +144,49 @@ export default function Home() {
 
   const handleDownload = async () => {
     if (cardRef.current) {
-      const dataUrl = await toPng(cardRef.current, { quality: 0.95 });
-      const link = document.createElement("a");
-      link.download = `github-card-${data?.userData?.login || "user"}.png`;
-      link.href = dataUrl;
-      link.click();
+      // Identify front and back faces with proper casting
+      const frontFace = cardRef.current.querySelector(
+        ".front"
+      ) as HTMLElement | null;
+      const backFace = cardRef.current.querySelector(
+        ".rotate-y-180"
+      ) as HTMLElement | null;
+
+      if (!frontFace || !backFace) {
+        console.error("Front or Back face element not found.");
+        return;
+      }
+
+      // Save original visibility states
+      const originalFrontFaceVisibility = frontFace.style.visibility || "";
+      const originalBackFaceVisibility = backFace.style.visibility || "";
+
+      try {
+        // Show only the desired face
+        if (isFlipped) {
+          frontFace.style.visibility = "hidden"; // Hide front
+          backFace.style.visibility = "visible"; // Show back
+        } else {
+          frontFace.style.visibility = "visible"; // Show front
+          backFace.style.visibility = "hidden"; // Hide back
+        }
+
+        // Wait for DOM to update
+        await new Promise((resolve) => setTimeout(resolve, 100));
+
+        // Capture the visible face
+        const dataUrl = await toPng(cardRef.current, { quality: 0.95 });
+        const link = document.createElement("a");
+        link.download = `github-card-${data?.userData?.login || "user"}.png`;
+        link.href = dataUrl;
+        link.click();
+      } catch (error) {
+        console.error("Failed to download card:", error);
+      } finally {
+        // Restore original visibility states
+        frontFace.style.visibility = originalFrontFaceVisibility;
+        backFace.style.visibility = originalBackFaceVisibility;
+      }
     }
   };
 
@@ -277,6 +315,7 @@ export default function Home() {
               style={{
                 transformStyle: "preserve-3d",
               }}
+              ref={cardRef}
               // onClick={handleFlip}
             >
               {/* Front Side */}
