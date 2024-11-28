@@ -8,7 +8,7 @@ interface QRCodeDivProps {
 const QRCodeDiv: React.FC<QRCodeDivProps> = ({ value }) => {
   return (
     <div
-      className="border border-[#F7D635]"
+      className="border border-[#deaf56] p-1"
       style={{ height: "auto", margin: "0 auto", maxWidth: 144, width: "100%" }}
     >
       <QRCode

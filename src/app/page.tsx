@@ -306,7 +306,7 @@ export default function Home() {
             scale={1.05}
             transitionEasing="cubic-bezier(0.19, 1.0, 0.22, 1.0)"
             glareBorderRadius="0rem"
-            className="relative aspect-video w-full rounded-[15px]"
+            className="relative aspect-video w-full rounded-[15px] cursor-pointer"
           >
             <div
               className={`relative w-full h-full transition-transform duration-700 ${
@@ -327,12 +327,22 @@ export default function Home() {
               >
                 <div className="front aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]">
                   <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
-                    <Image
-                      src={data.userData.avatar_url}
-                      alt="user-avatar"
-                      width={120}
-                      height={120}
-                    />
+                    <div className="flex justify-center items-center">
+                      <Image
+                        src="/gold-bg.png"
+                        alt="gold-bg"
+                        width={228}
+                        height={228}
+                        className="absolute"
+                      />
+                      <Image
+                        src={data.userData.avatar_url}
+                        alt="user-avatar"
+                        width={120}
+                        height={120}
+                        className="relative"
+                      />
+                    </div>
                     <h3>{data.userData.name}</h3>
                     <h3>{data.userData.login}</h3>
                     <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
@@ -381,15 +391,45 @@ export default function Home() {
 
               {/* Back Side */}
               <div
-                className="absolute w-full h-full bg-[#111] text-white flex flex-col justify-center items-center shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e] rotate-y-180 backface-hidden"
+                className="relative w-full h-full bg-[#111] text-white flex flex-col justify-center items-center shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e] rotate-y-180 backface-hidden overflow-hidden"
                 style={{
                   backfaceVisibility: "hidden",
                 }}
               >
+                <Image
+                  src="/gold-bg.png"
+                  alt="gold-bg"
+                  width={144}
+                  height={144}
+                  className="absolute top-[-4rem] left-[-4rem]"
+                />
+                <Image
+                  src="/gold-bg.png"
+                  alt="gold-bg"
+                  width={144}
+                  height={144}
+                  className="absolute top-[-4rem] right-[-4rem]"
+                />
+                <Image
+                  src="/gold-bg.png"
+                  alt="gold-bg"
+                  width={144}
+                  height={144}
+                  className="absolute bottom-[-4rem] right-[-4rem]"
+                />
+                <Image
+                  src="/gold-bg.png"
+                  alt="gold-bg"
+                  width={144}
+                  height={144}
+                  className="absolute bottom-[-4rem] left-[-4rem]"
+                />
                 <QRCodeDiv
                   value={`https://github.com/${data.userData.login}`}
                 />
-                <h3 className="mt-2 text-xl">{data.userData.login}</h3>
+                <h3 className="mt-2 text-xl text-[#deaf56]">
+                  @{data.userData.login}
+                </h3>
               </div>
             </div>
           </Tilt>
