@@ -4,6 +4,7 @@ import { toPng } from "html-to-image";
 import Image from "next/image";
 import Tilt from "react-parallax-tilt";
 import QRCodeDiv from "./components/QRCode";
+import Link from "next/link";
 
 interface GitHubRepo {
   name: string;
@@ -26,6 +27,7 @@ interface GitHubUser {
   public_gists: number;
   avatar_url: string | null;
   bio: string | null;
+  blog: string | null;
 }
 
 async function getGitHubStats(username: string) {
@@ -232,9 +234,9 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen max-w-2xl mx-auto px-4 py-8 sm:py-16">
+    <main className="min-h-screen max-w-2xl mx-auto px-4 py-4 sm:py-16">
       <div className="text-center mb-8">
-        <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-zinc-900 dark:text-white">
+        <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-[#d89838]">
           GitHub Card
         </h1>
         <p className="text-sm sm:text-base text-zinc-600 dark:text-zinc-400">
@@ -273,14 +275,14 @@ export default function Home() {
             className="flex-1 px-4 py-2 rounded-lg bg-white dark:bg-zinc-800 
                      border border-zinc-200 dark:border-zinc-700 
                      text-zinc-900 dark:text-white
-                     focus:outline-none focus:ring-2 focus:ring-blue-500
-                     dark:focus:ring-blue-400 font-mono text-[16px]"
+                     focus:outline-none focus:ring-2 focus:ring-[#f6b149]
+                     dark:focus:ring-[#d89838] font-mono text-[16px]"
           />
           <button
             type="submit"
             disabled={!username || loading}
-            className="px-4 sm:px-6 py-2 rounded-lg bg-blue-500 text-white font-medium
-                     hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed
+            className="px-4 sm:px-6 py-2 rounded-lg bg-[#d89838] text-[#eee] font-medium
+                     hover:bg-[#d28f2c] disabled:opacity-50 disabled:cursor-not-allowed
                      transition-colors text-sm sm:text-base"
           >
             Generate
@@ -290,7 +292,7 @@ export default function Home() {
 
       {loading && (
         <div className="flex justify-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#f6b149] " />
         </div>
       )}
 
@@ -325,54 +327,99 @@ export default function Home() {
                   backfaceVisibility: "hidden",
                 }}
               >
-                <div className="front aspect-video w-full bg-[#111] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]">
-                  <div className="w-[47.5%] h-full bg-[#1e1e1e] flex flex-col justify-center items-center">
+                <div className="front aspect-video w-full bg-[#1e1e1e] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]">
+                  <div className="w-[47.5%] h-full bg-[#111] flex flex-col justify-center items-center gap-6">
                     <div className="flex justify-center items-center">
                       <Image
                         src="/gold-bg.png"
                         alt="gold-bg"
-                        width={228}
-                        height={228}
-                        className="absolute"
+                        width={180}
+                        height={180}
+                        className="absolute gold-bg"
                       />
                       <Image
                         src={data.userData.avatar_url}
                         alt="user-avatar"
                         width={120}
                         height={120}
-                        className="relative"
+                        className="relative avatar"
                       />
                     </div>
-                    <h3>{data.userData.name}</h3>
-                    <h3>{data.userData.login}</h3>
-                    <h3 className="truncate w-[90%] hover:w-auto hover:whitespace-normal transition-all">
-                      {data.userData.bio}
-                    </h3>
+                    <div className="w-[90%] relative flex justify-center items-center flex-col text-white name-div">
+                      <h3 className="font-bold name">{data.userData.name}</h3>
+                      <h3 className="truncate w-full text-center italic bio">
+                        {data.userData.bio}
+                      </h3>
+                      {data.userData.blog && (
+                        <Link
+                          href={data.userData.blog}
+                          title={data.userData.blog}
+                          target="_blank"
+                          className="text-[#deaf56] hover:text-[#d89838] hover:underline transition-colors flex link"
+                        >
+                          <Image
+                            src="/link-outlined.svg"
+                            alt="link"
+                            width={18}
+                            height={18}
+                          />
+                          Website
+                        </Link>
+                      )}
+                    </div>
                   </div>
                   <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
-                  <div className="w-[47.5%] h-full">
+                  <div className="w-[47.5%] h-full text-box">
+                    <h2 className="title text-xl flex justify-center items-center gap-2 text-[#deaf56] font-serif font-bold">
+                      Your{" "}
+                      <Image
+                        src="/github-filled.svg"
+                        alt="github"
+                        width={24}
+                        height={24}
+                      />{" "}
+                      Stats
+                    </h2>
                     <table className="flex justify-center items-center">
-                      <tbody className="p-4 grid grid-cols-2 text-white gap-x-4">
+                      <tbody className="grid grid-cols-2 text-white gap-x-8 font-mono">
                         <tr>
-                          <td>Username</td>
+                          <td className="font-semibold">Username</td>
                         </tr>
                         <tr>
-                          <td>{data.userData.login}</td>
+                          <td>@{data.userData.login}</td>
                         </tr>
                         <tr>
-                          <td>REPOS</td>
+                          <td className="font-semibold">Repos</td>
                         </tr>
                         <tr>
                           <td>{data.userData.public_repos}</td>
                         </tr>
                         <tr>
-                          <td>FOLLOWERS</td>
+                          <td className="font-semibold">Followers</td>
                         </tr>
                         <tr>
                           <td>{data.userData.followers}</td>
                         </tr>
                         <tr>
-                          <td>CREATED-AT</td>
+                          <td className="font-semibold">Stars</td>
+                        </tr>
+                        <tr>
+                          <td>{data.stats.totalStars}</td>
+                        </tr>
+                        <tr>
+                          <td className="font-semibold">Forks</td>
+                        </tr>
+                        <tr>
+                          <td>{data.stats.totalForks}</td>
+                        </tr>
+                        <tr>
+                          <td className="font-semibold">Active Day</td>
+                        </tr>
+                        <tr>
+                          <td>{data.stats.mostActiveDay}</td>
+                        </tr>
+                        <tr>
+                          <td className="font-semibold">Created-on</td>
                         </tr>
                         <tr>
                           <td>
@@ -385,6 +432,10 @@ export default function Home() {
                         </tr>
                       </tbody>
                     </table>
+                    <h3 className="lang text-center text-white font-sans w-[90%]">
+                      Top Languages:{"  "}
+                      {data.stats.topLanguages}
+                    </h3>
                   </div>
                 </div>
               </div>
@@ -401,33 +452,33 @@ export default function Home() {
                   alt="gold-bg"
                   width={144}
                   height={144}
-                  className="absolute top-[-4rem] left-[-4rem]"
+                  className="absolute top-[-4rem] left-[-4rem] gold-corner-bg"
                 />
                 <Image
                   src="/gold-bg.png"
                   alt="gold-bg"
                   width={144}
                   height={144}
-                  className="absolute top-[-4rem] right-[-4rem]"
+                  className="absolute top-[-4rem] right-[-4rem] gold-corner-bg"
                 />
                 <Image
                   src="/gold-bg.png"
                   alt="gold-bg"
                   width={144}
                   height={144}
-                  className="absolute bottom-[-4rem] right-[-4rem]"
+                  className="absolute bottom-[-4rem] right-[-4rem] gold-corner-bg"
                 />
                 <Image
                   src="/gold-bg.png"
                   alt="gold-bg"
                   width={144}
                   height={144}
-                  className="absolute bottom-[-4rem] left-[-4rem]"
+                  className="absolute bottom-[-4rem] left-[-4rem] gold-corner-bg"
                 />
                 <QRCodeDiv
                   value={`https://github.com/${data.userData.login}`}
                 />
-                <h3 className="mt-2 text-xl text-[#deaf56]">
+                <h3 className="mt-2 text-xl text-[#deaf56] title">
                   @{data.userData.login}
                 </h3>
               </div>
@@ -487,15 +538,16 @@ export default function Home() {
                        transition-colors flex items-center gap-2 text-sm"
             >
               <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
+                className="w-4 h-4"
                 fill="none"
-                xmlns="http://www.w3.org/2000/svg"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
               >
                 <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={1.5}
                   d="M13.4325 20.115L13.695 21.615C14.8146 21.4198 15.8911 21.0288 16.875 20.46L16.125 19.1625C15.2903 19.6355 14.3789 19.958 13.4325 20.115ZM18.315 17.3025L19.5 18.2625C20.2264 17.3903 20.795 16.3978 21.18 15.33L19.7775 14.82C19.4394 15.7269 18.9443 16.5672 18.315 17.3025ZM7.125 20.4375C8.10893 21.0063 9.18539 21.3973 10.305 21.5925L10.5675 20.0925C9.61962 19.9284 8.70814 19.5984 7.875 19.1175L7.125 20.4375ZM4.2525 14.82L2.85 15.33C3.22589 16.3957 3.78421 17.388 4.5 18.2625L4.74 18.0675L5.655 17.3175C5.03631 16.5799 4.5515 15.7397 4.2225 14.835L4.2525 14.82ZM21.75 12C21.7472 10.8634 21.5441 9.73614 21.15 8.67L19.7475 9.18C20.0752 10.0843 20.2452 11.0382 20.25 12H21.75ZM19.5 5.7375C18.5851 4.63603 17.4387 3.74961 16.1425 3.14124C14.8462 2.53286 13.4319 2.21747 12 2.21747C10.5681 2.21747 9.15376 2.53286 7.85752 3.14124C6.56128 3.74961 5.41495 4.63603 4.5 5.7375V3H3V9H9V7.5H5.1075C5.81141 6.42463 6.75685 5.52861 7.86841 4.88336C8.97997 4.23812 10.2269 3.8615 11.5098 3.78355C12.7927 3.7056 14.0761 3.92847 15.2576 4.43439C16.4391 4.9403 17.4861 5.71527 18.315 6.6975L19.5 5.7375Z"
-                  fill="#1A1A1A"
                 />
               </svg>
               Flip
