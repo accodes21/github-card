@@ -328,7 +328,7 @@ export default function Home() {
                 }}
               >
                 <div className="front aspect-video w-full bg-[#1e1e1e] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]">
-                  <div className="w-[47.5%] h-full bg-[#111] flex flex-col justify-center items-center gap-6">
+                  <div className="w-[47.5%] h-full bg-[#111] flex flex-col justify-center items-center gap-6 img-div">
                     <div className="flex justify-center items-center">
                       <Image
                         src="/gold-bg.png"
@@ -377,6 +377,7 @@ export default function Home() {
                         alt="github"
                         width={24}
                         height={24}
+                        className="github"
                       />{" "}
                       Stats
                     </h2>
