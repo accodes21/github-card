@@ -1,34 +1,8 @@
 "use client";
 import { useState, useRef, RefObject } from "react";
 import { toPng } from "html-to-image";
-import Image from "next/image";
-import Tilt from "react-parallax-tilt";
-import QRCodeDiv from "./components/QRCode";
-import Link from "next/link";
-
-interface GitHubRepo {
-  name: string;
-  stargazers_count: number;
-  forks_count: number;
-  size: number;
-  language: string | null;
-  pushed_at: string;
-  created_at: string;
-}
-
-interface GitHubUser {
-  login: string;
-  name: string | null;
-  followers: number;
-  following: number;
-  public_repos: number;
-  created_at: string;
-  location: string | null;
-  public_gists: number;
-  avatar_url: string | null;
-  bio: string | null;
-  blog: string | null;
-}
+import { GitHubRepo, GitHubUser } from "./interface/github";
+import Card from "./components/Card";
 
 async function getGitHubStats(username: string) {
   const headers: HeadersInit = process.env.GITHUB_ACCESS_TOKEN
@@ -177,7 +151,7 @@ export default function Home() {
         await new Promise((resolve) => setTimeout(resolve, 100));
 
         // Capture the visible face
-        const dataUrl = await toPng(cardRef.current, { quality: 0.95 });
+        const dataUrl = await toPng(cardRef.current, { quality: 1 });
         const link = document.createElement("a");
         link.download = `github-card-${data?.userData?.login || "user"}.png`;
         link.href = dataUrl;
@@ -234,7 +208,7 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen max-w-2xl mx-auto px-4 py-4 sm:py-16">
+    <main className="max-h-screen max-w-2xl mx-auto px-4 py-4 sm:py-16">
       <div className="text-center mb-8">
         <h1 className="text-2xl sm:text-4xl font-bold mb-2 text-[#d89838]">
           GitHub Card
@@ -298,192 +272,23 @@ export default function Home() {
 
       {data && (
         <div className="flex flex-col items-center">
-          <Tilt
-            glareEnable={true}
-            glareMaxOpacity={0.25}
-            tiltMaxAngleX={10}
-            tiltMaxAngleY={10}
-            perspective={1000}
-            transitionSpeed={1000}
-            scale={1.05}
-            transitionEasing="cubic-bezier(0.19, 1.0, 0.22, 1.0)"
-            glareBorderRadius="0rem"
-            className="relative aspect-video w-full rounded-[15px] cursor-pointer"
-          >
-            <div
-              className={`relative w-full h-full transition-transform duration-700 ${
-                isFlipped ? "rotate-y-180" : ""
-              }`}
-              style={{
-                transformStyle: "preserve-3d",
-              }}
-              ref={cardRef}
-              // onClick={handleFlip}
-            >
-              {/* Front Side */}
-              <div
-                className="absolute w-full h-full backface-hidden rounded-[15px]"
-                style={{
-                  backfaceVisibility: "hidden",
-                }}
-              >
-                <div className="front aspect-video w-full bg-[#1e1e1e] flex shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e]">
-                  <div className="w-[47.5%] h-full bg-[#111] flex flex-col justify-center items-center gap-6 img-div">
-                    <div className="flex justify-center items-center">
-                      <Image
-                        src="/gold-bg.png"
-                        alt="gold-bg"
-                        width={180}
-                        height={180}
-                        className="absolute gold-bg"
-                      />
-                      <Image
-                        src={data.userData.avatar_url}
-                        alt="user-avatar"
-                        width={120}
-                        height={120}
-                        className="relative avatar"
-                      />
-                    </div>
-                    <div className="w-[90%] relative flex justify-center items-center flex-col text-white name-div">
-                      <h3 className="font-bold name">{data.userData.name}</h3>
-                      <h3 className="truncate w-full text-center italic bio">
-                        {data.userData.bio}
-                      </h3>
-                      {data.userData.blog && (
-                        <Link
-                          href={data.userData.blog}
-                          title={data.userData.blog}
-                          target="_blank"
-                          className="text-[#deaf56] hover:text-[#d89838] hover:underline transition-colors flex link"
-                        >
-                          <Image
-                            src="/link-outlined.svg"
-                            alt="link"
-                            width={18}
-                            height={18}
-                          />
-                          Website
-                        </Link>
-                      )}
-                    </div>
-                  </div>
-                  <div className="w-[5%] h-full bg-[#F7EA35] fold"></div>
-                  <div className="w-[47.5%] h-full text-box">
-                    <h2 className="title text-xl flex justify-center items-center gap-2 text-[#deaf56] font-serif font-bold">
-                      Your{" "}
-                      <Image
-                        src="/github-filled.svg"
-                        alt="github"
-                        width={24}
-                        height={24}
-                        className="github"
-                      />{" "}
-                      Stats
-                    </h2>
-                    <table className="flex justify-center items-center">
-                      <tbody className="grid grid-cols-2 text-white gap-x-8 font-mono">
-                        <tr>
-                          <td className="font-semibold">Repos</td>
-                        </tr>
-                        <tr>
-                          <td>{data.userData.public_repos}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Followers</td>
-                        </tr>
-                        <tr>
-                          <td>{data.userData.followers}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Stars</td>
-                        </tr>
-                        <tr>
-                          <td>{data.stats.totalStars}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Forks</td>
-                        </tr>
-                        <tr>
-                          <td>{data.stats.totalForks}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Active Day</td>
-                        </tr>
-                        <tr>
-                          <td>{data.stats.mostActiveDay}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Location</td>
-                        </tr>
-                        <tr>
-                          <td>{data.userData.location}</td>
-                        </tr>
-                        <tr>
-                          <td className="font-semibold">Created-on</td>
-                        </tr>
-                        <tr>
-                          <td>
-                            {
-                              new Date(data.userData.created_at)
-                                .toISOString()
-                                .split("T")[0]
-                            }
-                          </td>
-                        </tr>
-                      </tbody>
-                    </table>
-                    <h3 className="lang text-center text-white font-sans w-[90%]">
-                      Top Languages{"  "}: {data.stats.topLanguages}
-                    </h3>
-                  </div>
-                </div>
-              </div>
-
-              {/* Back Side */}
-              <div
-                className="relative w-full h-full bg-[#111] text-white flex flex-col justify-center items-center shadow-2xl shadow-slate-900 dark:shadow-[#2e2e2e] rotate-y-180 backface-hidden overflow-hidden"
-                style={{
-                  backfaceVisibility: "hidden",
-                }}
-              >
-                <Image
-                  src="/gold-bg.png"
-                  alt="gold-bg"
-                  width={144}
-                  height={144}
-                  className="absolute top-[-4rem] left-[-4rem] gold-corner-bg"
-                />
-                <Image
-                  src="/gold-bg.png"
-                  alt="gold-bg"
-                  width={144}
-                  height={144}
-                  className="absolute top-[-4rem] right-[-4rem] gold-corner-bg"
-                />
-                <Image
-                  src="/gold-bg.png"
-                  alt="gold-bg"
-                  width={144}
-                  height={144}
-                  className="absolute bottom-[-4rem] right-[-4rem] gold-corner-bg"
-                />
-                <Image
-                  src="/gold-bg.png"
-                  alt="gold-bg"
-                  width={144}
-                  height={144}
-                  className="absolute bottom-[-4rem] left-[-4rem] gold-corner-bg"
-                />
-                <QRCodeDiv
-                  value={`https://github.com/${data.userData.login}`}
-                />
-                <h3 className="mt-2 text-xl text-[#deaf56] title">
-                  @{data.userData.login}
-                </h3>
-              </div>
-            </div>
-          </Tilt>
+          <Card
+            avatar_url={data.userData.avatar_url}
+            name={data.userData.name}
+            bio={data.userData.bio}
+            blog={data.userData.blog}
+            location={data.userData.location}
+            login={data.userData.login}
+            followers={data.userData.followers}
+            public_repos={data.userData.public_repos}
+            created_at={data.userData.created_at}
+            totalForks={data.stats.totalForks}
+            totalStars={data.stats.totalStars}
+            mostActiveDay={data.stats.mostActiveDay}
+            topLanguages={data.stats.topLanguages}
+            isFlipped={isFlipped}
+            cardRef={cardRef}
+          />
 
           <div className="mt-6 flex gap-4">
             <button

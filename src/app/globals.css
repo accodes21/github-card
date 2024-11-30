@@ -124,6 +124,11 @@
   .text-box {
     width: max-content;
   }
+
+  .web-link{
+    width: 14px;
+    height: 14px;
+  }
 }
 @media screen and (max-width: 360px) {
   .img-div {
