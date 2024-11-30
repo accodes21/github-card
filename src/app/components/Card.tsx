@@ -2,7 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React, { useRef } from "react";
 import Tilt from "react-parallax-tilt";
-import { CardProps } from "../type/github";
+import { CardProps } from "../interface/github";
 import QRCodeDiv from "../components/QRCode";
 
 const Card = ({
