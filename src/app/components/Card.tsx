@@ -69,7 +69,7 @@ const Card = ({
                   className="relative avatar"
                 />
               </div>
-              <div className="w-[90%] relative flex justify-center items-center flex-col text-white name-div">
+              <div className="w-[90%] mt-[.7rem] relative flex justify-center items-center flex-col text-white name-div">
                 <h3 className="font-bold name">{name}</h3>
                 <h3 className="truncate w-full text-center italic bio">
                   {bio}
@@ -106,7 +106,7 @@ const Card = ({
                 />{" "}
                 Stats
               </h2>
-              <table className="flex justify-center items-center">
+              <table className="flex justify-center items-center table-fixed">
                 <tbody className="grid grid-cols-2 text-white gap-x-8 font-mono">
                   <tr>
                     <td className="font-semibold">Repos</td>
@@ -142,7 +142,7 @@ const Card = ({
                     <td className="font-semibold">Location</td>
                   </tr>
                   <tr>
-                    <td>{location}</td>
+                    <td className="truncate">{location?.split(",")[0]}</td>
                   </tr>
                   <tr>
                     <td className="font-semibold">Created-on</td>
