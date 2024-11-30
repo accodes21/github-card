@@ -11,7 +11,7 @@ export function ShareButtons({ gitCardRef, username }: ShareButtonsProps) {
     if (gitCardRef.current) {
       const dataUrl = await toPng(gitCardRef.current, { quality: 1 });
       const link = document.createElement("a");
-      link.download = `github-receipt-${username}.png`;
+      link.download = `github-shareCard-${username}.png`;
       link.href = dataUrl;
       link.click();
     }
@@ -23,13 +23,13 @@ export function ShareButtons({ gitCardRef, username }: ShareButtonsProps) {
     try {
       const dataUrl = await toPng(gitCardRef.current);
       const blob = await (await fetch(dataUrl)).blob();
-      const file = new File([blob], "github-receipt.png", {
+      const file = new File([blob], "github-shareCard.png", {
         type: "image/png",
       });
 
       if (navigator.share) {
         await navigator.share({
-          title: "My GitHub Receipt",
+          title: "My GitHub Stats Card",
           text: `Check out my GitHub stats for ${username}!`,
           files: [file],
         });
@@ -47,7 +47,7 @@ export function ShareButtons({ gitCardRef, username }: ShareButtonsProps) {
       <button
         onClick={downloadImage}
         className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg hover:shadow-xl transition-shadow"
-        title="Download receipt"
+        title="Download githubCard"
       >
         <svg
           className="w-5 h-5"
@@ -66,7 +66,7 @@ export function ShareButtons({ gitCardRef, username }: ShareButtonsProps) {
       <button
         onClick={shareCard}
         className="p-3 bg-white dark:bg-zinc-800 rounded-full shadow-lg hover:shadow-xl transition-shadow"
-        title="Share receipt"
+        title="Share shareCard"
       >
         <svg
           className="w-5 h-5"
