@@ -384,12 +384,6 @@ export default function Home() {
                     <table className="flex justify-center items-center">
                       <tbody className="grid grid-cols-2 text-white gap-x-8 font-mono">
                         <tr>
-                          <td className="font-semibold">Username</td>
-                        </tr>
-                        <tr>
-                          <td>@{data.userData.login}</td>
-                        </tr>
-                        <tr>
                           <td className="font-semibold">Repos</td>
                         </tr>
                         <tr>
@@ -420,6 +414,12 @@ export default function Home() {
                           <td>{data.stats.mostActiveDay}</td>
                         </tr>
                         <tr>
+                          <td className="font-semibold">Location</td>
+                        </tr>
+                        <tr>
+                          <td>{data.userData.location}</td>
+                        </tr>
+                        <tr>
                           <td className="font-semibold">Created-on</td>
                         </tr>
                         <tr>
@@ -434,8 +434,7 @@ export default function Home() {
                       </tbody>
                     </table>
                     <h3 className="lang text-center text-white font-sans w-[90%]">
-                      Top Languages:{"  "}
-                      {data.stats.topLanguages}
+                      Top Languages{"  "}: {data.stats.topLanguages}
                     </h3>
                   </div>
                 </div>
